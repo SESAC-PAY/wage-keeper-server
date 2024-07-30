@@ -14,8 +14,8 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 @Builder
+@AllArgsConstructor
 @Table(name = "company")
 @Entity
 public class Company {
@@ -38,6 +38,8 @@ public class Company {
     private String companyName;
 
     private String image;
+
+    private boolean hasReportedIssues; // 임금체불 신고 사업장 여부
 
 
 }
