@@ -2,6 +2,8 @@ package org.sesac.wagekeeper.domain.company.entity;
 
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.sesac.wagekeeper.domain.employmentinfo.entity.EmploymentInfo;
@@ -9,8 +11,11 @@ import org.sesac.wagekeeper.domain.review.entity.Review;
 
 import java.util.List;
 
+
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "company")
 @Entity
 public class Company {

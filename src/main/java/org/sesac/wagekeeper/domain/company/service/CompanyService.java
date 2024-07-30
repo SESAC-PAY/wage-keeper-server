@@ -10,6 +10,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.sesac.wagekeeper.domain.company.dto.response.CompanyInfoResponseDto;
 import org.sesac.wagekeeper.domain.company.dto.response.CompanyLocationDto;
+import org.sesac.wagekeeper.domain.company.entity.Company;
+import org.sesac.wagekeeper.domain.company.repository.CompanyRepository;
 import org.sesac.wagekeeper.global.error.exception.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -33,9 +35,35 @@ public class CompanyService {
 
     @Value("${kakao.api.key}")
     private String kakaoApiKey;
+
+    private final CompanyRepository companyRepository;
     private static final String SARMIN_BASE_URL = "https://www.saramin.co.kr/zf_user/search/company";
     private static final String COMPANY_DETAIL_BASE_URL = "https://www.saramin.co.kr/zf_user/company-info/view";
     private static final String KAKAO_GEOCODING_URL = "https://dapi.kakao.com/v2/local/search/address.json";
+
+
+    public CompanyInfoResponseDto getCompanyInfo(String searchWord) {
+        CompanyInfoResponseDto companyInfo = crawlingCompanyInfo(searchWord);
+
+        Company company = companyRepository.findByCompanyName(companyInfo.companyName()).orElseGet(() -> {
+            Company newCompany = Company.builder()
+                    .companyName(companyInfo.companyName())
+                    .address(companyInfo.address())
+                    .employer(companyInfo.employer())
+                    .image(companyInfo.image())
+                    .build();
+            return companyRepository.save(newCompany);
+        });
+
+        return new CompanyInfoResponseDto(
+                company.getId(),
+                company.getCompanyName(),
+                company.getAddress(),
+                company.getEmployer(),
+                company.getImage()
+        );
+    }
+
 
 
     // 회사 정보 크롤링(이름, 주소, 대표자명)
@@ -87,7 +115,7 @@ public class CompanyService {
 
         String image = (csn != null) ? crawlingCompanyImage(csn) : null;
 
-        return new CompanyInfoResponseDto(name, address, employer, image);
+        return new CompanyInfoResponseDto(null,name, address, employer, image);
     }
 
     // 회사 이미지 검색 크롤링

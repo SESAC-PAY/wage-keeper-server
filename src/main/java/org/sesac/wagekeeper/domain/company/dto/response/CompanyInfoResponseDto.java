@@ -1,7 +1,8 @@
 package org.sesac.wagekeeper.domain.company.dto.response;
 
 public record CompanyInfoResponseDto(
-        String name,
+        Long id,
+        String companyName,
         String address,
         String employer,
         String image

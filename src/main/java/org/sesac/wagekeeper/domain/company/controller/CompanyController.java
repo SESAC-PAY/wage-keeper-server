@@ -23,7 +23,7 @@ public class CompanyController {
     @GetMapping
     public ResponseEntity<SuccessResponse<?>> getCompanyInfo(@RequestParam String searchWord) {
         // 회사 세부 정보
-        CompanyInfoResponseDto companyInfoResponseDto = companyService.crawlingCompanyInfo(searchWord);
+        CompanyInfoResponseDto companyInfoResponseDto = companyService.getCompanyInfo(searchWord);
         String companyAddress = companyInfoResponseDto.address();
 
         // 회사 위치 정보
