@@ -29,4 +29,7 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Review> reviews;
 
+    public void updateCountry(String country) {
+        this.comeFrom = country;
+    }
 }
