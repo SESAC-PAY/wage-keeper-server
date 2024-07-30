@@ -23,6 +23,8 @@ public class User {
 
     private String comeFrom;
 
+    private Boolean submissionHistory;  //진정서류 접수 이력
+
     @OneToMany(mappedBy = "user")
     private List<EmploymentInfo> employmentInfos;
 
