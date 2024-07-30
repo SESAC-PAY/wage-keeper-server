@@ -29,6 +29,7 @@ public class Company {
 
     private String employer;
 
+    @Column(name = "company_name", unique = true)
     private String companyName;
 
     private String image;
