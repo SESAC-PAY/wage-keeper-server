@@ -40,7 +40,7 @@ public class CompanyService {
     private static final String SARMIN_BASE_URL = "https://www.saramin.co.kr/zf_user/search/company";
     private static final String COMPANY_DETAIL_BASE_URL = "https://www.saramin.co.kr/zf_user/company-info/view";
     private static final String KAKAO_GEOCODING_URL = "https://dapi.kakao.com/v2/local/search/address.json";
-
+    private static final String KAKAO_REVERSE_GEOCODING_URL = "https://dapi.kakao.com/v2/local/geo/coord2address.json";
 
     public CompanyInfoResponseDto getCompanyInfo(String searchWord) {
         CompanyInfoResponseDto companyInfo = crawlingCompanyInfo(searchWord);
@@ -141,7 +141,7 @@ public class CompanyService {
         return image;
     }
 
-    // 주소로 위도, 경도 검색
+    // 주소에서 위도, 경도 가져오기
     public CompanyLocationDto getLatLng(String address) {
         try {
             String encodedAddress = URLEncoder.encode(address, StandardCharsets.UTF_8.toString());
@@ -164,6 +164,36 @@ public class CompanyService {
                     double lat = location.get("y").getAsDouble();
                     double lng = location.get("x").getAsDouble();
                     return new CompanyLocationDto(lat, lng);
+                }
+            } else {
+                System.out.println("카카오맵 API 호출 실패: " + response.statusCode());
+            }
+        } catch (Exception e) {
+            throw new EntityNotFoundException(COMPANY_NOT_FOUND);
+        }
+        return null;
+    }
+
+    // 위도, 경도에서 주소 가져오기
+    public String getAddressFromLatLng(double latitude, double longitude) {
+        try {
+            String urlStr = KAKAO_REVERSE_GEOCODING_URL + "?x=" + longitude + "&y=" + latitude;
+
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI(urlStr))
+                    .header("Authorization", "KakaoAK " + kakaoApiKey)
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                JsonObject jsonObject = JsonParser.parseString(response.body()).getAsJsonObject();
+                JsonArray documents = jsonObject.getAsJsonArray("documents");
+                if (documents.size() > 0) {
+                    JsonObject address = documents.get(0).getAsJsonObject().getAsJsonObject("address");
+                    return address.get("address_name").getAsString();
                 }
             } else {
                 System.out.println("카카오맵 API 호출 실패: " + response.statusCode());
