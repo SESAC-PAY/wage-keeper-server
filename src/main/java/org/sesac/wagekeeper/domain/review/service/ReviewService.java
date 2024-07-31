@@ -101,7 +101,7 @@ public class ReviewService {
 
                 if (companyName.equals(company.getCompanyName()) && personName.equals(company.getEmployer())) {
                     company.setReportedIssues(true);
-                    company.setReportedCount(ThreadLocalRandom.current().nextInt(1, 11));
+                    company.setReportedCount(ThreadLocalRandom.current().nextInt(1, 4));
                     companyRepository.save(company);
                     return ReportIssueResponseDto.builder()
                             .reportIssue(true)
@@ -118,14 +118,6 @@ public class ReviewService {
 
 
     //리뷰 리스트 조회
-    public List<ReviewResponseDto> getReview(Long companyId) {
-        Company company = companyRepository.findById(companyId)
-                .orElseThrow(() -> new EntityNotFoundException(COMPANY_NOT_FOUND));
-
-        List<Review> reviews = reviewRepository.findByCompany(company);
-
-        return ReviewResponseDto.of(reviews);
-    }
 
     public List<ReviewResponseDto> getReview(Long companyId, String targetLanguage) {
         Company company = companyRepository.findById(companyId)
