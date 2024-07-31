@@ -45,6 +45,9 @@ public class CompanyService {
     public CompanyInfoResponseDto getCompanyInfo(String searchWord) {
         CompanyInfoResponseDto companyInfo = crawlingCompanyInfo(searchWord);
 
+        if (companyInfo.companyName().isBlank()) {
+            throw new EntityNotFoundException(COMPANY_NOT_FOUND);
+        }
         Company company = companyRepository.findByCompanyName(companyInfo.companyName()).orElseGet(() -> {
             Company newCompany = Company.builder()
                     .companyName(companyInfo.companyName())
@@ -169,5 +172,11 @@ public class CompanyService {
             throw new EntityNotFoundException(COMPANY_NOT_FOUND);
         }
         return null;
+    }
+
+    public String getCompanyName(Long companyId) {
+        Company company = companyRepository.findById(companyId)
+                .orElseThrow(() -> new EntityNotFoundException(COMPANY_NOT_FOUND));
+        return company.getCompanyName();
     }
 }

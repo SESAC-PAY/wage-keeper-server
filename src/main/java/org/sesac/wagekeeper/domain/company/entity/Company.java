@@ -45,5 +45,8 @@ public class Company {
     public void setReportedIssues(boolean reportedIssues) {
         this.reportedIssues = reportedIssues;
     }
+    public void setReportedCount(int reportedCount) {
+        this.reportedCount = reportedCount;
+    }
 
 }
