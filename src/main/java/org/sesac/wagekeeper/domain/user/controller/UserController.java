@@ -30,15 +30,7 @@ public class UserController {
 
     @GetMapping("/info/salary/{userId}")
     public ResponseEntity<SuccessResponse<?>> getMoneyToReceive(@PathVariable("userId") Long userId) {
-        int workingTime = 200;
-        return SuccessResponse.ok(
-                MoneyToReceive.builder()
-                        .userId(userId)
-                        .workingTime(workingTime)
-                        .salary(workingTime*Util.WAGE_PER_HOUR)
-                        .salaryToDollar((int)(workingTime*Util.WAGE_PER_HOUR* Util.EXCHANGE_RATE))
-                        .build()
-
-        );
+        MoneyToReceive moneyToReceive = userService.getMoneyToReceive(userId);
+        return SuccessResponse.ok(moneyToReceive);
     }
 }
