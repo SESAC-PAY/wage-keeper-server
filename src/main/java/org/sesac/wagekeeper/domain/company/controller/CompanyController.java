@@ -36,6 +36,7 @@ public class CompanyController {
 
         CompanyResponseDto companyResponseDto = new CompanyResponseDto(companyInfoResponseDto, companyLocationDto);
         return SuccessResponse.ok(companyResponseDto);
+    }
 
     @PostMapping("/registration/{companyId}/{userId}")
     public ResponseEntity<SuccessResponse<?>> joinCompany(@PathVariable("companyId") Long companyId, @PathVariable("userId") Long userId) {

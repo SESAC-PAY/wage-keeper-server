@@ -18,10 +18,12 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     private String name;
 
     private String comeFrom;
+
+    private Boolean submissionHistory;
+
 
     @OneToMany(mappedBy = "user")
     private List<EmploymentInfo> employmentInfos;
