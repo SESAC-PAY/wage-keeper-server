@@ -10,4 +10,5 @@ public class MoneyToReceive {
     int workingTime;
     int totalMoneyToGet;
     int totalMoneyToDollar;
+
 }

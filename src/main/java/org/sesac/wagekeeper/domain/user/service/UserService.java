@@ -1,11 +1,13 @@
 package org.sesac.wagekeeper.domain.user.service;
 
 import lombok.RequiredArgsConstructor;
+
 import org.sesac.wagekeeper.domain.Util.Util;
 import org.sesac.wagekeeper.domain.employmentinfo.entity.EmploymentInfo;
 import org.sesac.wagekeeper.domain.employmentinfo.repository.EmploymentInfoRepository;
 import org.sesac.wagekeeper.domain.user.dto.MoneyToReceive;
 import org.sesac.wagekeeper.domain.user.dto.UserInfo;
+
 import org.sesac.wagekeeper.domain.user.entity.User;
 import org.sesac.wagekeeper.domain.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final EmploymentInfoRepository employmentInfoRepository;
+
     public String setCountry(Long userId, String countryName) {
         Optional<User> user = userRepository.findById(userId);
         if(user.isEmpty()) throw new RuntimeException("No user id " + userId);
@@ -29,6 +32,7 @@ public class UserService {
 
         return currUser.getComeFrom();
     }
+
 
     public UserInfo getUserInfo(Long userId) {
         Optional<User> user = userRepository.findById(userId);

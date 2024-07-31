@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.sesac.wagekeeper.WageKeeperApplication;
 import org.sesac.wagekeeper.domain.Util.Util;
 import org.sesac.wagekeeper.domain.user.dto.MoneyToReceive;
+
+
 import org.sesac.wagekeeper.domain.user.dto.UserAllInfo;
 import org.sesac.wagekeeper.domain.user.dto.UserInfo;
 import org.sesac.wagekeeper.domain.user.entity.User;
@@ -26,12 +28,14 @@ public class UserController {
 
     @GetMapping("/info/basic/{userId}")
     public ResponseEntity<SuccessResponse<?>> getUserInfo(@PathVariable("userId") Long userId) {
+
         UserInfo userInfo = userService.getUserInfo(userId);
         return SuccessResponse.ok(userInfo);
     }
 
     @GetMapping("/info/salary/{userId}")
     public ResponseEntity<SuccessResponse<?>> getMoneyToReceive(@PathVariable("userId") Long userId) {
+
         MoneyToReceive moneyToReceive = userService.getMoneyToReceive(userId);
         return SuccessResponse.ok(moneyToReceive);
     }

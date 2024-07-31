@@ -1,6 +1,8 @@
 package org.sesac.wagekeeper.domain.review.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.sesac.wagekeeper.domain.company.entity.Company;
@@ -11,6 +13,8 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 @Table(name = "review")
 @Entity
 public class Review {
@@ -35,10 +39,9 @@ public class Review {
     @Column(updatable = false)
     private LocalDateTime createdDate;
 
-    private Boolean wageDelay;
-
     private Long properPaymentScore;
     private Long environmentScore;
     private Long domitoryScore;
     private Long fullfillContractScore;
+    private Double averageScore;
 }
