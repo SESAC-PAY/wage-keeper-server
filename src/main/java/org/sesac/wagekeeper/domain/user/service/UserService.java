@@ -5,6 +5,7 @@ import org.sesac.wagekeeper.domain.Util.Util;
 import org.sesac.wagekeeper.domain.employmentinfo.entity.EmploymentInfo;
 import org.sesac.wagekeeper.domain.employmentinfo.repository.EmploymentInfoRepository;
 import org.sesac.wagekeeper.domain.user.dto.MoneyToReceive;
+import org.sesac.wagekeeper.domain.user.dto.UserInfo;
 import org.sesac.wagekeeper.domain.user.entity.User;
 import org.sesac.wagekeeper.domain.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -29,11 +30,18 @@ public class UserService {
         return currUser.getComeFrom();
     }
 
-    public User getUserInfo(Long userId) {
+    public UserInfo getUserInfo(Long userId) {
         Optional<User> user = userRepository.findById(userId);
         if(user.isEmpty()) throw new RuntimeException("No user id " + userId);
 
-        return user.get();
+        User currUser = user.get();
+
+        return UserInfo.builder()
+                .id(currUser.getId())
+                .name(currUser.getName())
+                .comeFrom(currUser.getComeFrom())
+                .submissionHistory(currUser.getSubmissionHistory())
+                .build();
     }
 
     public MoneyToReceive getMoneyToReceive(Long userId) {
