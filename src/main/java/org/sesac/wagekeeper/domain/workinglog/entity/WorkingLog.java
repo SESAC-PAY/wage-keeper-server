@@ -1,6 +1,8 @@
 package org.sesac.wagekeeper.domain.workinglog.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.sesac.wagekeeper.domain.employmentinfo.entity.EmploymentInfo;
@@ -9,6 +11,8 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "working_log")
 @Entity
 public class WorkingLog {

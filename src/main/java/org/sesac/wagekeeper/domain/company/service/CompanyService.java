@@ -27,20 +27,35 @@ import java.nio.charset.StandardCharsets;
 
 import static org.sesac.wagekeeper.global.error.ErrorCode.COMPANY_IMAGE_NOT_FOUND;
 import static org.sesac.wagekeeper.global.error.ErrorCode.COMPANY_NOT_FOUND;
+import org.sesac.wagekeeper.domain.Util.Util;
+import org.sesac.wagekeeper.domain.employmentinfo.entity.EmploymentInfo;
+import org.sesac.wagekeeper.domain.employmentinfo.repository.EmploymentInfoRepository;
+import org.sesac.wagekeeper.domain.user.entity.User;
+import org.sesac.wagekeeper.domain.user.repository.UserRepository;
+
+
+import java.util.Optional;
+
 
 @RequiredArgsConstructor
 @Service
 @Transactional
 public class CompanyService {
 
+
     @Value("${kakao.api.key}")
     private String kakaoApiKey;
 
     private final CompanyRepository companyRepository;
+    private final EmploymentInfoRepository employmentInfoRepository;
+    private final UserRepository userRepository;
+    
+    
     private static final String SARMIN_BASE_URL = "https://www.saramin.co.kr/zf_user/search/company";
     private static final String COMPANY_DETAIL_BASE_URL = "https://www.saramin.co.kr/zf_user/company-info/view";
     private static final String KAKAO_GEOCODING_URL = "https://dapi.kakao.com/v2/local/search/address.json";
     private static final String KAKAO_REVERSE_GEOCODING_URL = "https://dapi.kakao.com/v2/local/geo/coord2address.json";
+
 
     public CompanyInfoResponseDto getCompanyInfo(String searchWord) {
         CompanyInfoResponseDto companyInfo = crawlingCompanyInfo(searchWord);
@@ -209,4 +224,23 @@ public class CompanyService {
                 .orElseThrow(() -> new EntityNotFoundException(COMPANY_NOT_FOUND));
         return company.getCompanyName();
     }
+
+
+
+    public void joinCompany(Long companyId, Long userId) {
+        Optional<User> user = userRepository.findById(userId);
+        Optional<Company> company = companyRepository.findById(companyId);
+
+        if(user.isEmpty() || company.isEmpty()) throw new RuntimeException("No User " + userId + " or Company " + companyId);
+
+        employmentInfoRepository.save(
+                EmploymentInfo.builder()
+                        .user(user.get())
+                        .company(company.get())
+                        .salary(Util.WAGE_PER_HOUR)
+                        .time(0L)
+                        .build()
+        );
+    }
+
 }

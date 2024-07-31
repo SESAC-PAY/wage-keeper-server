@@ -1,6 +1,8 @@
 package org.sesac.wagekeeper.domain.employmentinfo.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.sesac.wagekeeper.domain.company.entity.Company;
@@ -11,6 +13,8 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "employment_info")
 @Entity
 public class EmploymentInfo {
@@ -33,5 +37,9 @@ public class EmploymentInfo {
     private long time;
 
     private long salary;
+
+    public void increaseWorkingTime() {
+        time++;
+    }
 
 }

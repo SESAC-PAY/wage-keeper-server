@@ -8,6 +8,7 @@ import lombok.Getter;
 public class MoneyToReceive {
     long userId;
     int workingTime;
-    int salary;
-    int salaryToDollar;
+    int totalMoneyToGet;
+    int totalMoneyToDollar;
+
 }
