@@ -4,6 +4,7 @@ import lombok.Builder;
 
 @Builder
 public record ReviewScoreResponseDto(
+        Double totalAvgScore,
         Double totalAvgProperPaymentScore,
         Double totalAvgEnvironmentScore,
         Double totalAvgDomitoryScore,

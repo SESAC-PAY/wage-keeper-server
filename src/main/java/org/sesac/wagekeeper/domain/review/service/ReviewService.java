@@ -116,7 +116,6 @@ public class ReviewService {
                 .build();
     }
 
-
     //리뷰 리스트 조회
 
     public List<ReviewResponseDto> getReview(Long companyId, String targetLanguage) {
@@ -137,12 +136,15 @@ public class ReviewService {
 
         List<Review> reviews = reviewRepository.findByCompany(company);
 
+        Double totalAvgScore = calculateAverage(reviews, "averageScore");
+
         Double totalAvgProperPaymentScore = calculateAverage(reviews, "properPaymentScore");
         Double totalAvgEnvironmentScore = calculateAverage(reviews, "environmentScore");
         Double totalAvgDomitoryScore = calculateAverage(reviews, "domitoryScore");
         Double totalAvgFullfillContractScore = calculateAverage(reviews, "fullfillContractScore");
 
         return ReviewScoreResponseDto.builder()
+                .totalAvgScore(totalAvgScore)
                 .totalAvgProperPaymentScore(totalAvgProperPaymentScore)
                 .totalAvgEnvironmentScore(totalAvgEnvironmentScore)
                 .totalAvgDomitoryScore(totalAvgDomitoryScore)
@@ -158,7 +160,7 @@ public class ReviewService {
         }
 
         double average = reviews.stream()
-                .mapToLong(review -> {
+                .mapToDouble(review -> {
                     switch (scoreType) {
                         case "properPaymentScore":
                             return review.getProperPaymentScore();
@@ -168,6 +170,8 @@ public class ReviewService {
                             return review.getDomitoryScore();
                         case "fullfillContractScore":
                             return review.getFullfillContractScore();
+                        case "averageScore":
+                            return review.getAverageScore();
                         default:
                             throw new IllegalArgumentException("scoreType Error: " + scoreType);
                     }
