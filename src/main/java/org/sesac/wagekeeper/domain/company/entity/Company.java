@@ -39,7 +39,11 @@ public class Company {
 
     private String image;
 
-    private boolean hasReportedIssues; // 임금체불 신고 사업장 여부
+    private boolean reportedIssues; // 임금체불 신고 사업장 여부
+    private int reportedCount; // 임금체불 진정서 접수 건수
 
+    public void setReportedIssues(boolean reportedIssues) {
+        this.reportedIssues = reportedIssues;
+    }
 
 }
