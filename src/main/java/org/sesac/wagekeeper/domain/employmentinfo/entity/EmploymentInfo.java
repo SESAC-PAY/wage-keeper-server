@@ -38,4 +38,8 @@ public class EmploymentInfo {
 
     private long salary;
 
+    public void increaseWorkingTime() {
+        time++;
+    }
+
 }
