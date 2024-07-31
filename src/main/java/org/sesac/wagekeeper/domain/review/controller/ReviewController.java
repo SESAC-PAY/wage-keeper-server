@@ -32,14 +32,14 @@ public class ReviewController {
     }
 
     @GetMapping("/{companyId}")
-    public ResponseEntity<SuccessResponse<?>> getReview(@PathVariable Long companyId) throws IOException {
+    public ResponseEntity<SuccessResponse<?>> getReview(@PathVariable Long companyId, @RequestParam(defaultValue = "ko") String language) throws IOException {
         String companyName = companyService.getCompanyName(companyId);
         CompanyInfoResponseDto companyInfoResponseDto = companyService.getCompanyInfo(companyName);
 
         ReportIssueResponseDto reportIssueResponseDto = reviewService.getReportIssue(companyId);
 
         ReviewScoreResponseDto reviewScoreResponseDto = reviewService.getReviewScore(companyId);
-        List<ReviewResponseDto> reviewResponseDto = reviewService.getReview(companyId);
+        List<ReviewResponseDto> reviewResponseDto = reviewService.getReview(companyId, language);
 
         TotalCompanyInfoResponseDto totalCompanyInfoResponseDto = new TotalCompanyInfoResponseDto(companyInfoResponseDto, reportIssueResponseDto, reviewScoreResponseDto, reviewResponseDto);
         return SuccessResponse.ok(totalCompanyInfoResponseDto);

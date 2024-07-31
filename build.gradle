@@ -38,6 +38,8 @@ dependencies {
     implementation 'org.jsoup:jsoup:1.15.4'
     //gson
     implementation 'com.google.code.gson:gson:2.10.1'
+    //google cloud translate
+    implementation 'com.google.cloud:google-cloud-translate:1.95.7'
 
 }
 

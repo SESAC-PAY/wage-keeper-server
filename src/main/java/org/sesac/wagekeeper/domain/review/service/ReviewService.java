@@ -17,6 +17,7 @@ import org.sesac.wagekeeper.domain.review.repository.ReviewRepository;
 import org.sesac.wagekeeper.domain.user.entity.User;
 import org.sesac.wagekeeper.domain.user.repository.UserRepository;
 import org.sesac.wagekeeper.global.error.exception.EntityNotFoundException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +37,8 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final CompanyRepository companyRepository;
     private final UserRepository userRepository;
+    private final TranslateService translateService;
+
 
     public void createReview(ReviewRequestDto reviewRequestDto) {
 
@@ -124,6 +127,17 @@ public class ReviewService {
         return ReviewResponseDto.of(reviews);
     }
 
+    public List<ReviewResponseDto> getReview(Long companyId, String targetLanguage) {
+        Company company = companyRepository.findById(companyId)
+                .orElseThrow(() -> new EntityNotFoundException(COMPANY_NOT_FOUND));
+
+        List<Review> reviews = reviewRepository.findByCompany(company);
+        List<ReviewResponseDto> reviewResponse = ReviewResponseDto.of(reviews);
+        List<ReviewResponseDto> translatedReviewResponse = translateService.translateReviews(reviewResponse, targetLanguage);
+
+        return translatedReviewResponse;
+    }
+
     //리뷰 세부 평점 조회
     public ReviewScoreResponseDto getReviewScore(Long companyId) {
         Company company = companyRepository.findById(companyId)
@@ -143,6 +157,7 @@ public class ReviewService {
                 .totalAvgFullfillContractScore(totalAvgFullfillContractScore)
                 .build();
     }
+
 
     //평균 계산
     private Double calculateAverage(List<Review> reviews, String scoreType) {
