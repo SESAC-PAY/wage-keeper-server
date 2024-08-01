@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.sesac.wagekeeper.domain.employmentinfo.entity.EmploymentInfo;
+import org.sesac.wagekeeper.domain.image.entity.Image;
 import org.sesac.wagekeeper.domain.review.entity.Review;
 
 import java.util.List;
@@ -30,6 +31,9 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Review> reviews;
+
+    @OneToMany(mappedBy = "user")
+    private List<Image> images;
 
     public void updateCountry(String country) {
         this.comeFrom = country;
