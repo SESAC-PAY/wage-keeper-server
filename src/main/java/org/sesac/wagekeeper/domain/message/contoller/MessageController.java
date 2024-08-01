@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@RequestMapping("/api/message")
 @AllArgsConstructor
 public class MessageController {
     private final MessageService messageService;
