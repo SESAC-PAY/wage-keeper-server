@@ -2,6 +2,7 @@ package org.sesac.wagekeeper.domain.message.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.builder.Diff;
 import org.sesac.wagekeeper.domain.Util.GPTConfig;
 import org.sesac.wagekeeper.domain.message.dto.GptRequestDTO;
 import org.sesac.wagekeeper.domain.message.dto.MessageInput;
@@ -57,14 +58,14 @@ public class MessageService {
         return messageRespository.findAllByWorkspaceOrderByCreatedAtDesc(workspace.get());
     }
 
-    public SseEmitter streamMessages(Long workspaceId) {
+    public SseEmitter streamMessages(Long workspaceId, int level, boolean isFirst) {
         Optional<Workspace> safeWorkspace = workspaceRepository.findById(workspaceId);
         if(safeWorkspace.isEmpty()) throw new RuntimeException("No workspace id " + workspaceId);
 
         Workspace workspace = safeWorkspace.get();
 
         SseEmitter emitter = new SseEmitter();
-        List<Message> inputMessages = getLLMInputs(workspace);
+        List<Message> inputMessages = getLLMInputs(workspace, level, isFirst);
 
         Flux<String> eventStream = getResponse(inputMessages);
         StringBuilder llmResponse = new StringBuilder();
@@ -117,23 +118,23 @@ public class MessageService {
 
     }
 
-    public List<Message> getLLMInputs(Workspace workspace) {
+    public List<Message> getLLMInputs(Workspace workspace, int level, boolean isFirst) {
         List<Message> messages = messageRespository.findAllByWorkspaceOrderByCreatedAtDesc(workspace);
         if(messages == null) throw new RuntimeException("The Messages is Null");
-        if(messages.isEmpty()) throw new RuntimeException("User input is not saved");
+        //if(messages.isEmpty()) throw new RuntimeException("User input is not saved");
 
         List<Message> parsedDatas = new ArrayList<>();
 
         parsedDatas.add(Message.builder()
-                .createdAt(messages.get(0).getCreatedAt())
-                .content("make response of user input")
+                .createdAt(LocalDateTime.now())
+                .content(GPTConfig.getSystemPrompts(level, isFirst))
                 .role("system")
-                .workspace(messages.get(0).getWorkspace())
+                .workspace(workspace)
                 .build()
         );
+        if(isFirst) return parsedDatas;
 
         for(int i=messages.size()-1; i>=0; i--) parsedDatas.add(messages.get(i));
-
         return parsedDatas;
     }
 

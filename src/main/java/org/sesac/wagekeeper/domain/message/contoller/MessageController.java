@@ -20,9 +20,9 @@ import java.util.Map;
 public class MessageController {
     private final MessageService messageService;
 
-    @GetMapping("/stream/{workspaceId}")
-    public SseEmitter streamMessages(@PathVariable("workspaceId") Long workspaceId) {
-        return messageService.streamMessages(workspaceId);
+    @GetMapping("/stream/{workspaceId}/{level}/{isFirst}")
+    public SseEmitter streamMessages(@PathVariable("workspaceId") Long workspaceId, @PathVariable("level") int level, @PathVariable("isFirst") boolean isFirst) {
+        return messageService.streamMessages(workspaceId, level, isFirst);
     }
 
     @PostMapping("/send")
