@@ -41,6 +41,12 @@ dependencies {
     //google cloud translate
     implementation 'com.google.cloud:google-cloud-translate:1.95.7'
 
+    // Flux(for stream)
+    implementation 'io.projectreactor:reactor-core'
+
+    //WebClient(for stream)
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
 }
 
 tasks.named('test') {
