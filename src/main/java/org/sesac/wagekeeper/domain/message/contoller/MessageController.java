@@ -13,6 +13,8 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping("/api/message")
@@ -20,9 +22,25 @@ import java.util.Map;
 public class MessageController {
     private final MessageService messageService;
 
+
     @GetMapping("/stream/{workspaceId}/{level}/{isFirst}")
-    public SseEmitter streamMessages(@PathVariable("workspaceId") Long workspaceId, @PathVariable("level") int level, @PathVariable("isFirst") boolean isFirst) {
-        return messageService.streamMessages(workspaceId, level, isFirst);
+    public String streamMessages(@PathVariable("workspaceId") Long workspaceId,
+                                 @PathVariable("level") int level,
+                                 @PathVariable("isFirst") boolean isFirst) {
+        CompletableFuture<String> str = messageService.streamMessages(workspaceId, level, isFirst);
+        try {
+            String result = str.get();
+            System.out.println("output is : " + result);
+            return result;
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            return "Error";
+        }
+    }
+
+    @GetMapping("/sync/{workspaceId}/{level}/{isFirst}")
+    public String getGptOutputSync(@PathVariable("workspaceId") Long workspaceId, @PathVariable("level") int level, @PathVariable("isFirst") boolean isFirst) {
+        return messageService.getGptOutputSync(workspaceId, level, isFirst);
     }
 
     @PostMapping("/send")

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import reactor.core.publisher.Flux;
@@ -23,6 +24,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class MessageService {
@@ -58,65 +60,65 @@ public class MessageService {
         return messageRespository.findAllByWorkspaceOrderByCreatedAtDesc(workspace.get());
     }
 
-    public SseEmitter streamMessages(Long workspaceId, int level, boolean isFirst) {
-        Optional<Workspace> safeWorkspace = workspaceRepository.findById(workspaceId);
-        if(safeWorkspace.isEmpty()) throw new RuntimeException("No workspace id " + workspaceId);
-
-        Workspace workspace = safeWorkspace.get();
-
-        SseEmitter emitter = new SseEmitter();
-        List<Message> inputMessages = getLLMInputs(workspace, level, isFirst);
-
-        Flux<String> eventStream = getResponse(inputMessages);
-        StringBuilder llmResponse = new StringBuilder();
-
-        eventStream.subscribe(
-                event -> {
-                    try {
-                        String content = extractContent(event);
-
-                        if (!content.isEmpty()) {
-                            SseEmitter.SseEventBuilder eventBuilder = SseEmitter.event()
-                                    .data(content)
-                                    .name("message");
-
-                            emitter.send(eventBuilder);
-                            llmResponse.append(content);
-                        }
-                    } catch (IOException e) {
-                        saveMessage(MessageInput.builder()
-                                .content(llmResponse.toString())
-                                .role(GPTConfig.ROLE_ASSISTANT)
-                                .workspaceId(workspaceId)
-                                .build()
-                        );
-                        emitter.completeWithError(e);
-                    }
-                },
-                error -> emitter.completeWithError(error),
-                () -> {
-                    try {
-                        emitter.send(SseEmitter.event()
-                                .data("")
-                                .name("end"));
-                        emitter.complete();
-
-                        // Save the GPT response to the database
-                        saveMessage(MessageInput.builder()
-                                .content(llmResponse.toString())
-                                .role(GPTConfig.ROLE_ASSISTANT)
-                                .workspaceId(workspaceId)
-                                .build()
-                        );
-                    } catch (IOException e) {
-                        emitter.completeWithError(e);
-                    }
-                }
-        );
-
-        return emitter;
-
-    }
+//    public String streamMessages(Long workspaceId, int level, boolean isFirst) {
+//        Optional<Workspace> safeWorkspace = workspaceRepository.findById(workspaceId);
+//        if(safeWorkspace.isEmpty()) throw new RuntimeException("No workspace id " + workspaceId);
+//
+//        Workspace workspace = safeWorkspace.get();
+//
+//        SseEmitter emitter = new SseEmitter();
+//        List<Message> inputMessages = getLLMInputs(workspace, level, isFirst);
+//
+//        Flux<String> eventStream = getResponse(inputMessages);
+//        StringBuilder llmResponse = new StringBuilder();
+//
+//        eventStream.subscribe(
+//                event -> {
+//                    try {
+//                        String content = extractContent(event);
+//
+//                        if (!content.isEmpty()) {
+//                            SseEmitter.SseEventBuilder eventBuilder = SseEmitter.event()
+//                                    .data(content)
+//                                    .name("message");
+//
+//                            emitter.send(eventBuilder);
+//                            llmResponse.append(content);
+//                        }
+//                    } catch (IOException e) {
+//                        saveMessage(MessageInput.builder()
+//                                .content(llmResponse.toString())
+//                                .role(GPTConfig.ROLE_ASSISTANT)
+//                                .workspaceId(workspaceId)
+//                                .build()
+//                        );
+//                        emitter.completeWithError(e);
+//                    }
+//                },
+//                error -> emitter.completeWithError(error),
+//                () -> {
+//                    try {
+//                        emitter.send(SseEmitter.event()
+//                                .data("")
+//                                .name("end"));
+//                        emitter.complete();
+//
+//                        // Save the GPT response to the database
+//                        saveMessage(MessageInput.builder()
+//                                .content(llmResponse.toString())
+//                                .role(GPTConfig.ROLE_ASSISTANT)
+//                                .workspaceId(workspaceId)
+//                                .build()
+//                        );
+//                    } catch (IOException e) {
+//                        emitter.completeWithError(e);
+//                    }
+//                }
+//        );
+//
+//        return emitter;
+//
+//    }
 
     public List<Message> getLLMInputs(Workspace workspace, int level, boolean isFirst) {
         List<Message> messages = messageRespository.findAllByWorkspaceOrderByCreatedAtDesc(workspace);
@@ -171,5 +173,150 @@ public class MessageService {
         } catch (Exception e) {
             return "";
         }
+    }
+
+    public String getGptOutputSync(Long workspaceId, int level, boolean isFirst) {
+        Optional<Workspace> safeWorkspace = workspaceRepository.findById(workspaceId);
+        if (safeWorkspace.isEmpty()) throw new RuntimeException("No workspace id " + workspaceId);
+
+        Workspace workspace = safeWorkspace.get();
+
+        List<Message> inputMessages = getLLMInputs(workspace, level, isFirst);
+
+        // Get response from GPT synchronously
+        String gptResponse = getResponseSync(inputMessages);
+
+        // Save the GPT response to the database
+        saveMessage(MessageInput.builder()
+                .content(gptResponse)
+                .role(GPTConfig.ROLE_ASSISTANT)
+                .workspaceId(workspaceId)
+                .build()
+        );
+
+        return gptResponse;
+    }
+
+    public String getResponseSync(List<Message> messages) {
+
+//        ExchangeStrategies strategies = ExchangeStrategies.builder()
+//                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(10 * 1024 * 1024)) // 10MB
+//                .build();
+
+        WebClient webClient = WebClient.builder()
+                .baseUrl(GPTConfig.CHAT_URL)
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .defaultHeader(GPTConfig.AUTHORIZATION, GPTConfig.BEARER + apiKey)
+//                .exchangeStrategies(strategies)
+                .build();
+
+        GptRequestDTO request = GptRequestDTO.builder()
+                .model(GPTConfig.CHAT_MODEL)
+                .maxTokens(GPTConfig.MAX_TOKEN)
+                .temperature(GPTConfig.TEMPERATURE)
+                .stream(false)
+                .messages(messages)
+                .build();
+
+        String response = webClient.post()
+                .bodyValue(request)
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();  // Block to get the response synchronously
+
+        return extractContent(response);
+    }
+
+    public CompletableFuture<String> collectStreamMessages(SseEmitter emitter) {
+        CompletableFuture<String> resultFuture = new CompletableFuture<>();
+        StringBuilder collectedText = new StringBuilder();
+
+        emitter.onCompletion(() -> resultFuture.complete(collectedText.toString()));
+
+        emitter.onTimeout(() -> resultFuture.completeExceptionally(new RuntimeException("SSE stream timed out")));
+
+        emitter.onError(throwable -> resultFuture.completeExceptionally(throwable));
+
+        return resultFuture;
+    }
+
+    public void addEvent(SseEmitter emitter, String content) throws IOException {
+        SseEmitter.SseEventBuilder eventBuilder = SseEmitter.event()
+                .data(content)
+                .name("message");
+        emitter.send(eventBuilder);
+    }
+
+    public void completeEmitter(SseEmitter emitter) throws IOException {
+        emitter.send(SseEmitter.event().data("").name("end"));
+        emitter.complete();
+    }
+
+    public CompletableFuture<String> streamMessages(Long workspaceId, int level, boolean isFirst) {
+        Optional<Workspace> safeWorkspace = workspaceRepository.findById(workspaceId);
+        if (safeWorkspace.isEmpty()) throw new RuntimeException("No workspace id " + workspaceId);
+
+        Workspace workspace = safeWorkspace.get();
+
+        SseEmitter emitter = new SseEmitter();
+        List<Message> inputMessages = getLLMInputs(workspace, level, isFirst);
+
+        Flux<String> eventStream = getResponse(inputMessages);
+        StringBuilder llmResponse = new StringBuilder();
+
+        CompletableFuture<String> resultFuture = new CompletableFuture<>();
+
+        eventStream.subscribe(
+                event -> {
+                    try {
+                        String content = extractContent(event);
+
+                        if (!content.isEmpty()) {
+                            SseEmitter.SseEventBuilder eventBuilder = SseEmitter.event()
+                                    .data(content)
+                                    .name("message");
+
+                            emitter.send(eventBuilder);
+                            llmResponse.append(content);
+                        }
+                    } catch (IOException e) {
+                        saveMessage(MessageInput.builder()
+                                .content(llmResponse.toString())
+                                .role(GPTConfig.ROLE_ASSISTANT)
+                                .workspaceId(workspaceId)
+                                .build()
+                        );
+                        emitter.completeWithError(e);
+                        resultFuture.completeExceptionally(e);
+                    }
+                },
+                error -> {
+                    emitter.completeWithError(error);
+                    resultFuture.completeExceptionally(error);
+                },
+                () -> {
+                    try {
+                        emitter.send(SseEmitter.event()
+                                .data("")
+                                .name("end"));
+                        emitter.complete();
+
+                        // Save the GPT response to the database
+                        saveMessage(MessageInput.builder()
+                                .content(llmResponse.toString())
+                                .role(GPTConfig.ROLE_ASSISTANT)
+                                .workspaceId(workspaceId)
+                                .build()
+                        );
+
+                        resultFuture.complete(llmResponse.toString());
+                    } catch (IOException e) {
+                        emitter.completeWithError(e);
+                        resultFuture.completeExceptionally(e);
+                    }
+                }
+        );
+
+        return resultFuture;
     }
 }

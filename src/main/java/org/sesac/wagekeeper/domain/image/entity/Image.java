@@ -1,11 +1,13 @@
 package org.sesac.wagekeeper.domain.image.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.sesac.wagekeeper.domain.user.entity.User;
+import org.sesac.wagekeeper.domain.workspace.entity.Workspace;
 
 @AllArgsConstructor
 @Builder
@@ -13,14 +15,15 @@ import org.sesac.wagekeeper.domain.user.entity.User;
 @NoArgsConstructor
 @Table(name = "image")
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    String imageUrl;
+    private String imageUrl;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "workspace_id")
+    private Workspace workspace;
 }

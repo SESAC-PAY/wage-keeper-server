@@ -23,10 +23,9 @@ public class ImageController {
     private final ImageService imageService;
     private final String uploadDir = System.getProperty("java.io.tmpdir");
 
-    @PostMapping("/upload/{userId}")
-    public ResponseEntity<SuccessResponse<?>> uploadImage(@RequestParam("file") MultipartFile file, @PathVariable Long userId) throws IOException {
-
-        String imageUrl = imageService.saveImage(userId, file);
+    @PostMapping("/upload/{workspaceId}")
+    public ResponseEntity<SuccessResponse<?>> uploadImage(@RequestParam("file") MultipartFile file, @PathVariable Long workspaceId) throws IOException {
+        String imageUrl = imageService.saveImage(workspaceId, file);
         return SuccessResponse.ok(imageUrl);
     }
 

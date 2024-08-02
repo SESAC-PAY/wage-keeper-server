@@ -19,10 +19,11 @@ public class GPTConfig {
         "너는 다음 <> 사이의 내용을 더하거나 빼지 말고 그대로 출력해야 해. <와 >는 출력하지 마. <안녕하세요 저는 당신을 위한 임금지키미예요. 임금 체불 진정서를 저와 대화를 하면서 작성해보아요. \n" +
                 "\"진정 이유\" 부분을 작성할 때 중요한 것은 사건의 배경과 구체적인 피해 사실을 명확히 하는 것입니다. 먼저, 언제부터 언제까지 어느 회사에서 일하셨는지 알려주실 수 있나요?>",
 
-        "너는 다음 <> 사이의 내용을 더하거나 빼지 말고 그대로 출력해야 해. <와 >는 출력하지 마. <피해 사실에 대한 내용들 잘 들었습니다.  이제 조사관이 피해 사실을 파악할 때 제출 내용이 사실이라고 판단할 근거가 있어야 해요! \n" +
+        "너는 다음 <> 사이의 내용을 더하거나 빼지 말고 그대로 출력해야 해. <와 >는 출력하지 마. <피해 사실에 대한 내용들 잘 들었습니다. 이제 조사관이 피해 사실을 파악할 때 제출 내용이 사실이라고 판단할 근거가 있어야 해요! \n" +
                 "1. 고용 계약서\n" +
-                "2. 임금 체불을 요구했던사장님과의 메시지 (카카오톡 등) 캡쳐본 \n" +
-                "3. 통장 거래내역 >",
+                "2. 임금 체불을 요구했던 사장님과의 메시지 (카카오톡 등) 캡쳐본 \n" +
+                "3. 통장 거래내역\n" +
+                "증거 자료를 업로드 한 후, 해당 자료가 어떤 자료인지 간단한 설명을 적어주세요!>",
 
         "너는 다음 <> 사이의 내용을 더하거나 빼지 말고 그대로 출력해야 해. <진정서 작성을 위해 이름과 전화번호, 주소지, 주민번호를 알려주세요>",
 
@@ -30,11 +31,11 @@ public class GPTConfig {
     };
 
     public static final String[][] targetInfos = {
-        {"재직 기간", "현재 재직중인지 여부", "퇴사일(퇴직한 경우)", "근로 계약서에 작성된 임금", "임금을 못 받은 기간", "못 받은 임금의 추산치", "처음에는 사장이 돈을 잘 줬는지", "입사일", "업무 내용", "퇴사를 하게 된 이유(퇴직한 경우)"},
+        {"재직 기간", "현재 재직중인지 여부", "퇴사일(퇴직한 경우)", "근로 계약서에 작성된 임금", "임금을 못 받은 기간", "못 받은 임금의 추산치", "처음에는 사장이 돈을 잘 줬는지", "입사일", "업무 내용", "퇴사를 하게 된 이유(퇴직한 경우)", "사장에게 문제에 대한 해결을 요구한 적이 있는지 여부", "문제 해결 요구를 했을 때 사장의 반응(문제 해결을 요구했을 경우)", "법적 대응을 하고 있는지. 하고 있다면 어떤 방식으로 하고 있는지"},
         {"고용 계약서", "임금 체불을 요구한 사장님과의 메시지", "통장 거래 내역"},
         {"사용자 본인 이름", "전화번호", "주소지", "주민등록번호"},
         {"신고 대상자의 이름", "신고 대상자의 전화번호", "회사 이름", "회사 전화번호", "근무지 주소"},
-        {"<html><head><meta charset='UTF-8'><style>body { font-family: 'Malgun Gothic', sans-serif; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; } .container { border: 2px solid black; padding: 20px; max-width: 100%; box-sizing: border-box; min-height: 29.7cm; width: 21cm; /* A4 Size */ } h1 { text-align: center; margin-bottom: 10px; } h2 { margin-top: 30px; } h3 { margin-top: 20px; } p { margin: 5px 0; } .center { text-align: center; } .margin-top-40 { margin-top: 40px; } hr.double { border: 0; border-top: 1.5px solid black; width: 100%; margin-bottom: 0 auto; } .date { text-align: center; margin-top: 40px; } .bottom-right { text-align: right; margin-top: 20px; }</style></head><body><div class='container'><h1>진정서</h1><hr class='double'><h2>제목 : ${제목}</h2><h3>진정인 정보</h3><p><strong>성명:</strong> ${진정인 성명}</p><p><strong>주민번호:</strong> ${진정인 주민번호}</p><p><strong>주소:</strong> ${진정인 주소}</p><p><strong>전화번호:</strong> ${진정인 전화번호}</p><h3>피진정인 정보</h3><p><strong>성명:</strong> ${피진정인 성명}</p><p><strong>전화번호:</strong> ${피진정인 전화번호}</p><p><strong>주소:</strong> ${피진정인 주소}</p><h3 class='center margin-top-40'>- 진정취지 -</h3><p>${진정취지}</p><h3 class='center'>- 진정 이유 -</h3><p>${진정 이유}</p><h3 class='center margin-top-40'>- 증거자료 -</h3><p>${증거자료}</p><div class='date'><p>${년}년 ${월}월 ${일}일</p></div><div class='bottom-right'><hr class='double'><p>진정인: ${진정인 성명} (인)</p></div></div></body></html>"}
+        {"<html><head><meta charset='UTF-8'><style>body { font-family: 'Malgun Gothic', sans-serif; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; } .container { border: 2px solid black; padding: 20px; max-width: 100%; box-sizing: border-box; min-height: 29.7cm; width: 21cm; /* A4 Size */ } h1 { text-align: center; margin-bottom: 10px; } h2 { margin-top: 30px; } h3 { margin-top: 20px; } p { margin: 5px 0; } .center { text-align: center; } .margin-top-40 { margin-top: 40px; } hr.double { border: 0; border-top: 1.5px solid black; width: 100%; margin-bottom: 0 auto; } .date { text-align: center; margin-top: 40px; } .bottom-right { text-align: right; margin-top: 20px; } .image {margin: 10px 0; text-align: center;} .image img {width: 50%; height: auto;}</style></head><body><div class='container'><h1>진정서</h1><hr class='double'><h2>제목 : ${제목}</h2><h3>진정인 정보</h3><p><strong>성명:</strong> ${진정인 성명}</p><p><strong>주민번호:</strong> ${진정인 주민번호}</p><p><strong>주소:</strong> ${진정인 주소}</p><p><strong>전화번호:</strong> ${진정인 전화번호}</p><h3>피진정인 정보</h3><p><strong>성명:</strong> ${피진정인 성명}</p><p><strong>전화번호:</strong> ${피진정인 전화번호}</p><p><strong>주소:</strong> ${피진정인 주소}</p><h3 class='center margin-top-40'>- 진정취지 -</h3><p>${진정취지}</p><h3 class='center'>- 진정 이유 -</h3><p>${진정 이유}</p><h3 class='center margin-top-40'>- 증거자료 -</h3>${증거자료}<div class='date'><p>${년}년 ${월}월 ${일}일</p></div><div class='bottom-right'><hr class='double'><p>진정인: ${진정인 성명} (인)</p></div></div></body></html>"}
     };
 
     private static final String[] systemPrompts = {
@@ -83,6 +84,9 @@ public class GPTConfig {
 
         """
         너는 주어진 채팅 정보를 가지고 가장 하단에 주어진 진정서 HTML을 완성하는 임무를 가지고 있어.
+        너는 오직 완성된 HTML만을 출력해야 하고 다른 내용은 절대로 출력해선 안되.
+        즉 너의 응답은 <HTML>로 시작해서 </HTML>로 끝나야 해.
+        추가로 개행문자를 사용하지마.
         작성하는 글들은 진정서의 분위기와 양식에 알맞아야 해.
         너는 ${}에서 '{' 와 '}' 사이에 어떤 정보를 넣어야 하는지 적혀 있어.
         ${태그 이름} 전체를 채팅 내역에서 추출한 정보로 치환하면 되.
@@ -111,7 +115,20 @@ public class GPTConfig {
         ${년} : 진정서를 작성하는 년도. ex) 2024
         ${월} : 진정서를 작성하는 월. ex) 8
         ${일} : 진정서를 작성하는 일자. ex) 1
-        
+        ${증거자료} : 사용자가 증거자료로 제출한 이미지 화면에 표시. 이때 <p>증거자료 설명 </p> 이후 다음줄에 <div class="image"><img src="이미지 주소" alt="사진 설명"></div> 형식으로 만들어 다음줄에 이미지가 표시되도록 한다. 앞의 과정을 모든 이미지에 대해 반복한다.
+        ex)
+        <p>고용 계약서 사진</p>
+        <div class='image'>
+          <img src='http://localhost:8080/api/image/tempIng2.png' alt='고용 계약서 사진'>
+        </div>
+        <p>사장님과의 카카오톡 대화 내역</p>
+        <div class='image'>
+          <img src='http://localhost:8080/api/image/tempIng1.png' alt='사장님과의 카카오톡 대화 내역'>
+        </div>
+        <p>통장 거래 내역 캡쳐본</p>
+        <div class='image'>
+          <img src='http://localhost:8080/api/image/tempIng3.png' alt='통장 거래 내역 캡쳐본'>
+        </div>
         """
     };
 

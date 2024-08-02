@@ -1,5 +1,7 @@
 package org.sesac.wagekeeper.domain.user.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Table(name = "user")
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class User {
 
     @Id
@@ -31,9 +34,6 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Review> reviews;
-
-    @OneToMany(mappedBy = "user")
-    private List<Image> images;
 
     public void updateCountry(String country) {
         this.comeFrom = country;
