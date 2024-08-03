@@ -5,6 +5,8 @@ import org.sesac.wagekeeper.domain.image.entity.Image;
 import org.sesac.wagekeeper.domain.image.repository.ImageRepository;
 import org.sesac.wagekeeper.domain.user.entity.User;
 import org.sesac.wagekeeper.domain.user.repository.UserRepository;
+import org.sesac.wagekeeper.domain.workspace.entity.Workspace;
+import org.sesac.wagekeeper.domain.workspace.repository.WorkspaceRepository;
 import org.sesac.wagekeeper.global.error.exception.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,12 +25,12 @@ import static org.sesac.wagekeeper.global.error.ErrorCode.USER_NOT_FOUND;
 @Transactional
 public class ImageService {
     private final ImageRepository imageRepository;
-    private final UserRepository userRepository;
+    private final WorkspaceRepository workspaceRepository;
     private final String uploadDir = System.getProperty("java.io.tmpdir");
 
-    public String saveImage(Long userId, MultipartFile file) throws IOException {
-        User user = userRepository.findById(userId).orElseThrow(()
-                -> new EntityNotFoundException(USER_NOT_FOUND));
+    public String saveImage(Long workspaceId, MultipartFile file) throws IOException {
+        Workspace workspace = workspaceRepository.findById(workspaceId).orElseThrow(()
+                -> new RuntimeException("No workspace id " + workspaceId));
 
         if (file.isEmpty()) {
             throw new RuntimeException("File is empty");
@@ -49,7 +51,7 @@ public class ImageService {
 
         imageRepository.save(Image.builder()
                 .imageUrl(imageUrl)
-                .user(user)
+                .workspace(workspace)
                 .build());
 
         return imageUrl;
