@@ -21,8 +21,8 @@
 ## Preview
 ![screenshot](/src/main/resources/static/image/wageKeeper.gif)
 
-<a href="/src/main/resources/static/example/document.pdf"><img src="/src/main/resources/static/image/document1.png" alt="진정서" width="450"></a>
-<a href="/src/main/resources/static/example/document.pdf"><img src="/src/main/resources/static/image/document2.png" alt="진정서" width="450"></a>
+<a href="/src/main/resources/static/example/document.pdf"><img src="/src/main/resources/static/image/document1.png" alt="진정서" width="800"></a>
+<a href="/src/main/resources/static/example/document.pdf"><img src="/src/main/resources/static/image/document2.png" alt="진정서" width="800"></a>
 
 ## Background
 <a href="/src/main/resources/static/example/document.pdf"><img src="/src/main/resources/static/image/motivation.png" alt="개발 동기" width="900"></a>
