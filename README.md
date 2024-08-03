@@ -10,13 +10,14 @@
 <h4 align="center">이주 노동자 대상 임금 체불 대응 서비스</h4>
 
 <p align="center">
-  <a href="#screen">Run Screen</a> •
+  <a href="#preview">Preview</a> •
   <a href="#Key-Features">Key Features</a> •
   <a href="#how-to-use">How To Use</a> •
   <a href="#tech-stack">Tech Stack</a> •
   <a href="#team">Team</a>
 </p>
 
+## Preview
 ![screenshot](/src/main/resources/static/image/wageKeeper.gif)
 
 <a href="/src/main/resources/static/example/document.pdf"><img src="/src/main/resources/static/image/document1.png" alt="진정서" width="900"></a>
