@@ -71,10 +71,10 @@
 
 
 ## 🔷 Tech Stack
- ![React Native Badge](https://img.shields.io/badge/React%20Native-61DAFB?style=for-the-badge&logo=react&logoColor=white) |
-![Spring Boot Badge](https://img.shields.io/badge/Spring%20Boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white) |
-![MySQL Badge](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white) |
-![OpenAI Badge](https://img.shields.io/badge/OpenAI-000000?style=for-the-badge&logo=openai&logoColor=white) |
+ ![React Native Badge](https://img.shields.io/badge/React%20Native-61DAFB?style=for-the-badge&logo=react&logoColor=white) 
+![Spring Boot Badge](https://img.shields.io/badge/Spring%20Boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white) 
+![MySQL Badge](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white) 
+![OpenAI Badge](https://img.shields.io/badge/OpenAI-000000?style=for-the-badge&logo=openai&logoColor=white) 
 
 
 
